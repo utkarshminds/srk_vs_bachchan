@@ -5,16 +5,19 @@ import os
 import numpy 
 from PIL import Image 
 
-@st.cache_data
+
 def load_best_model():
-    bestmodel = keras.load_model('bestmodel.keras')
+    bestmodel = keras.models.load_model('bestmodel.h5')
     return bestmodel
 
 def make_prediction(image):
     img_resized = image.resize((200,200), Image.LANCZOS)
+    img_resized = numpy.array(img_resized) / 255.0  # Normalize pixel values
     image_array = numpy.expand_dims(img_resized, axis=0)
     bestmodel = load_best_model()
+    print(image_array.shape)
     preds = bestmodel.predict(image_array)
+    st.write(preds)
 
     class_final = (preds > 0.5).astype("int32")
 
